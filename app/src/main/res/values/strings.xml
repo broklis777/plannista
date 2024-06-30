@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Plannista</string>
+    <string name="title_schedule">Schedule</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_availability">Availability</string>
+    <string name="title_swap">Swap</string>
+    <string name="title_activity_login">Autorizacija</string>
+    <string name="prompt_email">E-pasts</string>
+    <string name="prompt_password">Parole</string>
+    <string name="action_sign_in_short">Ielogoties</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="welcome">Sveicinati</string>
+    <string name="login_failed">Login failed</string>
+    <string name="invalid_username">Nederigs lietotajvards</string>
+    <string name="invalid_password">Nederiga parole</string>
+</resources>
