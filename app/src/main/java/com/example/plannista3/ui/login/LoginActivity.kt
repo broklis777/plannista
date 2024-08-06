@@ -9,14 +9,12 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import com.example.plannista3.MainActivity
 import com.example.plannista3.databinding.ActivityLoginBinding
-
-import com.example.plannista3.R
 
 class LoginActivity : AppCompatActivity() {
 
@@ -40,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
-            // disable login button unless both username / password is valid
+            // Enable login button if data is valid
             login.isEnabled = loginState.isDataValid
 
             if (loginState.usernameError != null) {
@@ -63,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
             }
             setResult(Activity.RESULT_OK)
 
-            //Complete and destroy login activity once successful
+            // Complete and destroy login activity once successful
             finish()
         })
 
@@ -101,14 +99,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
-        //val welcome = getString(R.string.welcome)
-        //val displayName = model.displayName
-        // TODO : initiate successful logged in experience
-        //Toast.makeText(
-            //applicationContext,
-            //"$welcome $displayName",
-            //Toast.LENGTH_LONG
-        //).show()
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()

@@ -3,13 +3,15 @@ package com.example.plannista3.ui.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
-import com.example.plannista3.data.LoginRepository
-import com.example.plannista3.data.Result
-
 import com.example.plannista3.R
+import com.example.plannista3.data.network.ApiClient
+import com.example.plannista3.data.model.LoginRequest
+import com.example.plannista3.data.model.LoginResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel : ViewModel() {
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
@@ -18,15 +20,20 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     val loginResult: LiveData<LoginResult> = _loginResult
 
     fun login(username: String, password: String) {
-        // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
+        val requestData = LoginRequest(username, password)
+        ApiClient.apiService.authorize(requestData).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                if (response.isSuccessful) {
+                    _loginResult.value = LoginResult(success = LoggedInUserView(displayName = response.body()?.token ?: ""))
+                } else {
+                    _loginResult.value = LoginResult(error = R.string.login_failed)
+                }
+            }
 
-        if (result is Result.Success) {
-            _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
-        }
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                _loginResult.value = LoginResult(error = R.string.login_failed)
+            }
+        })
     }
 
     fun loginDataChanged(username: String, password: String) {
@@ -41,11 +48,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
 
     // A placeholder username validation check
     private fun isUserNameValid(username: String): Boolean {
-        return if (username.contains('@')) {
-            Patterns.EMAIL_ADDRESS.matcher(username).matches()
-        } else {
-            username.isNotBlank()
-        }
+        return username.contains('@')
     }
 
     // A placeholder password validation check
